@@ -18,7 +18,8 @@ public class Coordinator {
 		    InetAddress c_addr = InetAddress.getLocalHost();
 		    String c_name = c_addr.getHostName();
 		    System.out.println ("Coordinator address is "+c_addr);
-		    System.out.println ("Coordinator host name is "+c_name+"\n\n");    
+		    System.out.println ("Coordinator host name is "+c_name+"\n\n");  
+
 		}
 		catch (Exception e) {
 		    System.err.println(e);
@@ -30,6 +31,12 @@ public class Coordinator {
 	
 		// Create and run a C_receiver and a C_mutex object sharing a C_buffer object
 
+   	 C_buffer buffer = new C_buffer();
+   	 C_receiver receiver = new C_receiver(buffer, port);
+    	 C_mutex mutex = new C_mutex(buffer, port);
+    
+    receiver.start();
+    mutex.start();
     }
     
 }
