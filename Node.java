@@ -16,6 +16,7 @@ public class Node{
     String	n_host = "127.0.0.1";
     String 	n_host_name;
     int     n_port;
+    private int sleepTime;
     
     public Node(String nam, int por, int sec){	
 		ra = new Random();
@@ -32,20 +33,58 @@ public class Node{
     	while(true){
     
 	    // >>>  sleep a random number of seconds linked to the initialisation sec value
+		int randomNumber = ra.nextInt(sleepTime);
+    		System.out.println("a random sleep time:"+ randomNumber);
+    		try { Thread.sleep(randomNumber);}
+    		catch (InterruptedException e) {
+    			e.printStackTrace(); }
     		
     		try {
 
 		    // **** Send to the coordinator a token request.
 		    // send your ip address and port number
+    			n_ss = new ServerSocket(n_port);
+				s = new Socket(c_host, c_request_port);
+				OutputStream outstream = s.getOutputStream();
+				pout = new PrintWriter(outstream);
+				String toSend = n_host_name + " " + n_port;
+				pout.write(toSend);
+				pout.flush();
+				pout.close();
+				System.out.println("request for token has been made to the port: " + s.getPort() + ". \n");
     		
 		    // **** Then Wait for the token
 		    // Print suitable messages
+				try {
+					System.out.println("Waiting for the token...");
+					n_token = n_ss.accept();
+					System.out.println("Token received!" + "\n");
+					n_ss.close();
+					n_token.close();
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 
 		    // **** Sleep for a while
 		    // This is the critical session
+				try {
+					System.out.println("Enter the critical session.");
+					Thread.sleep(1500);
+					System.out.println("Exit the critical session" + ". \n");
+				} catch (InterruptedException e) {
+					e.printStackTrace(); }
 
 		    // **** Return the token
 		    // Print suitable messages - also considering communication failures 
+				try {
+			// Makes new connection to indicate return of token (Port 7000 and 7001 is used)
+					n_token = new Socket(c_host, 7001);
+					System.out.println("Token returned to coordinator.");
+					Thread.sleep(3000);
+					n_token.close();
+				} catch (InterruptedException e) {
+						e.printStackTrace(); }
 
     		}
     		catch (java.io.IOException e) {
