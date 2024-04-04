@@ -29,7 +29,15 @@ public class Coordinator {
 		if (args.length == 1) port = Integer.parseInt(args[0]);
 	
 		// Create and run a C_receiver and a C_mutex object sharing a C_buffer object
+		C_receiver receiver_c = new C_receiver(buffer, port);
+		Thread receiverThread = new Thread(receiver_c); // instantiate receiver thread
 
+		C_mutex mutex_c = new C_mutex(buffer, 7001);
+		Thread mutex_thread = new Thread(mutex_c);
+		// The Mutex receives threads, takes requests, and put them in line to done./
+		
+		receiverThread.start();
+		mutex_thread.start();
     }
     
 }
